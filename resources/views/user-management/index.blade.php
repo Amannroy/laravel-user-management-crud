@@ -20,7 +20,7 @@
             border-radius: 8px;
             background-color: #fff;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            max-width: 800px;
+            max-width: 1000px;
         }
         h1 {
             color: #333;
@@ -82,12 +82,15 @@
             <a href="{{ route('user-management.create') }}"><button class="submit_btn">Create</button></a>
             <button>Export</button>
         </div>
+        <div class="logout">
+            <a href="/login">Logout</a>
+        </div>
         <table id="user-management_list">
             <thead>
                 <tr>
                     <th>Name</th>
                     <th>Email</th>
-                    <th>Password</th>
+                    {{-- <th>Password</th> --}}
                     <th>Action</th>
                 </tr>
             </thead>
@@ -96,18 +99,19 @@
                 <tr>
                     <td>{{ $user['name'] }}</td>
                     <td>{{ $user['email'] }}</td>
-                    <td>{{ $user['password'] }}</td>
+                   {{-- <td>{{ str_repeat('*', strlen($user['password'])) }}</td> --}}
                     <td class="action-icons">
                         <a href="{{ route('user-management.edit', $user['id']) }}"><i class="fas fa-edit"></i></a>
-                        <a href="{{ route('user-management.destroy', $user['id']) }}"><i class="fas fa-trash-alt"></i></a>
+                        <a href="#" onclick="event.preventDefault(); document.getElementById('delete-user-{{ $user['id'] }}').submit();"><i class="fas fa-trash-alt"></i></a>
+                        <form id="delete-user-{{ $user['id'] }}" action="{{ route('user-management.destroy', $user['id']) }}" method="POST" style="display: none;">
+                            @csrf
+                            @method('DELETE')
+                        </form>
                     </td>
                 </tr>
                 @endforeach
             </tbody>
         </table>
-        <div class="logout">
-            <a href="/">Logout</a>
-        </div>
     </div>
 </body>
 </html>

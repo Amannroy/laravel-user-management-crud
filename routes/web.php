@@ -2,6 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserManagementController;
+use App\Http\Controllers\LoginController;
+use App\Http\Controllers\SignupController;
+use App\Http\Controllers\AuthController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -13,9 +16,18 @@ use App\Http\Controllers\UserManagementController;
 |
 */
 
-Route::get('/', function () {
-    return view('login');
-});
+// Route::get('/login', function () {
+//     return view('login');
+// });
+
+//Signup
+Route::get('/signup', [AuthController::class, 'register_view'])->name('signup');
+Route::post('/signup', [AuthController::class, 'register'])->name('signup');
+
+//Login
+Route::get('/login', [AuthController::class, 'index'])->name('login');
+Route::post('/login', [AuthController::class, 'Login'])->name('login');
+
 Route::get('/signup', function () {
     return view('signup');
 });
@@ -29,3 +41,5 @@ Route::put('/user-management/{id}', [UserManagementController::class ,'update'])
 Route::delete('/user-management/{id}', [UserManagementController::class ,'destroy'])->name('user-management.destroy');
 Route::get('/user-management/trash', [UserManagementController::class,'trash'])->name('user-management.trash');
 Route::get('/user-management/{id}/restore/', [UserManagementController::class,'restore'])->name('user-management.restore');
+
+

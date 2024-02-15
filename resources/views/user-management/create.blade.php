@@ -85,28 +85,32 @@
 </head>
 <body>
     <div class="right_part">
+        <h1>Creation</h1>
         <div class="d-flex gap-3 justify-content-between align-items-center">
             <nav aria-label="breadcrumb">
                 <div class="breadcrumb">
-                    <div class="breadcrumb-item">User</div>
                     <div class="breadcrumb-item active" aria-current="page">User Create</div>
                 </div>
             </nav>
         </div>
         
         <!-- Success or Error Messages -->
-        @if(Session::has('msg'))
-        <div class="alert alert-success alert-dismissible">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-            {{ session('msg') }}
-        </div>
-        @elseif(Session::has('error'))
-        <div class="alert alert-danger alert-dismissible">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-            {{ session('error') }}
-        </div>
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
         @endif
 
+        @if (session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
+ 
         <!-- Form Section -->
         <section class="folder_sec p-0">
             <form method="POST" action="{{ route('user-management.store') }}">

@@ -25,7 +25,7 @@
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             padding: 20px;
-            width: 400px;
+            width: 600px;
             max-width: 90%;
         }
 
@@ -73,7 +73,9 @@
 <body>
     <div class="container">
         <h1>Welcome to my Website</h1>
-        <a href="/user-management">Go to User Management Page</a>
+        @auth
+        <p>You are already logged in. <a href="/user-management">Go to Dashboard</a></p>
+        @else
         <h2>User Login Form</h2>
         <form action="/login" method="POST">
             @csrf 
@@ -89,5 +91,6 @@
         </form>
         <p>If you are not registered, <a href="/signup">sign up here</a>.</p>
     </div>
+    @endauth
 </body>
 </html>

@@ -3,16 +3,19 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\UserManagement;
+use App\Http\Controllers\Controller;
+use DataTables;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
+
 
 class UserManagementController extends Controller
 {
     public function index(){
-        $users = [
-            ['id' => 1, 'name' => 'Aman Roy', 'email' => 'aman@roy.com', 'password' => '*********'],
-            ['id' => 2,'name' => 'Virat Kohli', 'email' => 'virat@kohli.com', 'password' => '*********']
-            
-        ];
-        return view('user-management.index',  ['users' => $users]);
+        $users = UserManagement::all();
+        return view('user-management.index', compact('users'));
     }
 
     /**
@@ -32,9 +35,21 @@ class UserManagementController extends Controller
 	 */
 	public function store(Request $request) {
         $title = 'User Management | USER STORE';
-       
-    }
+        $request->validate([
+			'name' => 'required|string|max:25',
+			'email' => 'required|string|email|unique:users|max:35',
+            'password' => 'required|string|min:8',
+    ]);
+	// Creatiing a new user
+	$user = new UserManagement();
+	$user->name = $request->input('name');
+	$user->email = $request->input('email');
+	$user->password = bcrypt($request->input('password'));
+	$user->save();
 
+	// Redirecting back to index with success message
+	return redirect()->route('user-management.index')->with('Success', "Congratulations,User created successfully!");
+}
     /**
 	 * Display the specified resource.
 	 *
@@ -54,7 +69,8 @@ class UserManagementController extends Controller
 	 */
 	public function edit(Request $request, $id) {
 		$title = 'User Management | USER EDIT';
-        return view('user-management.edit');
+		$user = UserManagement::find($id);
+        return view('user-management.edit', compact('user'));
     }
 
     /**
@@ -65,8 +81,16 @@ class UserManagementController extends Controller
 	 * @return \Illuminate\Http\Response
 	 */
 	public function update(Request $request, $id) {
-        $title = 'User Management | USER UPDATE';
-    }
+		$user = UserManagement::find($id);
+		$user->name = $request->input('name');
+		$user->email = $request->input('email');
+		// Update other user fields as needed
+	
+		$user->save();
+	
+		return redirect()->route('user-management.index')->with('Success', "User updated successfully!");
+	}
+	
     /**
 	 * Remove the specified resource from storage.
 	 *
@@ -74,13 +98,30 @@ class UserManagementController extends Controller
 	 * @return \Illuminate\Http\Response
 	 */
 	public function destroy($id) {
-        $title = 'User Management | USER DESTROY';
-    }
+		$user = UserManagement::find($id);
+		$user->delete();
+	
+		return redirect()->route('user-management.index')->with('Success', "User deleted successfully!");
+	}
+	
 
     //Datatables
 	public function getList(Request $request)
 	{
-   
+        if ($request->ajax()) {
+			$data = UserManagement::latest()->get();
+			
+			return Datatables::of($data)
+				->addColumn('action', function($row) {
+					// Modify this part to add action buttons for edit and delete
+					$btn = '<a href="javascript:void(0)" class="edit btn btn-primary btn-sm">Edit</a>';
+					$btn .= ' <a href="javascript:void(0)" class="delete btn btn-danger btn-sm">Delete</a>';
+					return $btn;
+				})
+				->rawColumns(['action'])
+				->make(true);
+		}
+		return response()->json(['message' => 'Invalid request'], 400);
     }
 
 }

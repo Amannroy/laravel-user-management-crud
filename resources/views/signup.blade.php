@@ -25,7 +25,7 @@
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             padding: 20px;
-            width: 400px;
+            width: 600px;
             max-width: 90%;
         }
 
@@ -90,7 +90,7 @@
             </div><br>
             <button type="submit">Signup</button>
         </form>
-        <p>If already signed up, then <a href="/">login here</a>.</p>
+        <p>If already signed up, then <a href="/login">login here</a>.</p>
     </div>
 </body>
 </html>

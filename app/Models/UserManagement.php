@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class UserManagement extends Model
 {
     use HasFactory;
-
+    protected $table = 'user-management';
     protected $fillable = [
         'name',
         'email',
